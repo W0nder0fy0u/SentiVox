@@ -92,7 +92,7 @@ export default function LoginPage() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
                     email: email.toLowerCase().trim(),
-                    otp: otp.toLowerCase().trim(),
+                    otp: otp.trim(),
                 }),
             });
 
