@@ -5,6 +5,7 @@ import { AuthProvider } from "@/lib/AuthContext";
 import Navbar from "@/components/Navbar";
 import BottomNav from "@/components/BottomNav";
 import Footer from "@/components/Footer";
+import { LayoutClient } from "@/components/LayoutClient";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -94,32 +95,20 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col`}
       >
-        <AuthProvider>
-          <Navbar />
-          <BottomNav />
-          <main className="flex-1 pt-4 md:pt-16 pb-20 md:pb-0">
-            {/* Premium Global Background */}
-            <div className="fixed inset-0 -z-50 pointer-events-none">
-              {/* Deep atmospheric base */}
-              <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-
-              {/* Top center radiance */}
-              <div className="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[1000px] h-[800px] bg-[radial-gradient(circle_at_center,var(--primary-soft)_0%,transparent_70%)] opacity-30 blur-[100px]" style={{ '--primary-soft': 'rgba(68, 137, 200, 0.4)' } as React.CSSProperties} />
-
-              {/* Floating orbs for depth */}
-              <div className="absolute top-[10%] left-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '8s' }} />
-              <div className="absolute bottom-[-10%] right-[-10%] w-[600px] h-[600px] bg-primary/10 rounded-full blur-[120px] animate-pulse" style={{ animationDuration: '10s', animationDelay: '1s' }} />
-
-              {/* Center glow connecting elements */}
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[150px]" />
-
-              {/* Subtle grid pattern overlay (optional for tech feel) */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808005_1px,transparent_1px),linear-gradient(to_bottom,#80808005_1px,transparent_1px)] bg-[size:24px_24px]" />
-            </div>
-            {children}
-          </main>
-          <Footer />
-        </AuthProvider>
+        <LayoutClient>
+          <AuthProvider>
+            <Navbar />
+            <BottomNav />
+            <main className="flex-1 pt-4 md:pt-16 pb-20 md:pb-0">
+              {/* Grid Pattern Background */}
+              <div className="fixed inset-0 -z-50 pointer-events-none bg-black">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#4489c815_2px,transparent_2px),linear-gradient(to_bottom,#4489c815_2px,transparent_2px)] bg-[size:32px_32px]" />
+              </div>
+              {children}
+            </main>
+            <Footer />
+          </AuthProvider>
+        </LayoutClient>
       </body>
     </html>
   );

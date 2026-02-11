@@ -1,4 +1,4 @@
-
+import { memo } from "react";
 import Image from "next/image";
 import { VALUES } from "@/lib/values";
 import { Zap, Globe, Lock } from "lucide-react";
@@ -21,7 +21,7 @@ const features = [
     },
 ];
 
-export default function HeroSection() {
+function HeroSection() {
     return (
         <section className="relative pt-10 lg:pt-16 overflow-hidden">
             <div className="container mx-auto px-4 sm:px-6 lg:px-8 relative">
@@ -59,3 +59,5 @@ export default function HeroSection() {
         </section>
     );
 }
+
+export default memo(HeroSection);

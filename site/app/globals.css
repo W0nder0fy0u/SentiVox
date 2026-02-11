@@ -1,9 +1,5 @@
 @import "tailwindcss";
 
-/* 
-  Senti-Vox Dark Theme
-  Primary color: #4489c8
-*/
 
 :root {
   /* Primary palette */
@@ -11,21 +7,21 @@
   --primary-hover: #5a9cd6;
   --primary-muted: #2a5a87;
   --primary-foreground: #ffffff;
-  
+
   /* Dark theme colors */
   --background: #0a0a0f;
   --foreground: #fafafa;
-  
+
   /* Surface colors */
   --card: #121218;
   --card-foreground: #fafafa;
   --card-hover: #1a1a24;
-  
+
   /* Border and muted */
   --border: #27272a;
   --muted: #18181b;
   --muted-foreground: #a1a1aa;
-  
+
   /* Status colors */
   --success: #22c55e;
   --success-soft: rgba(34, 197, 94, 0.15);
@@ -35,11 +31,11 @@
   --warning-soft: rgba(245, 158, 11, 0.15);
   --neutral: #71717a;
   --neutral-soft: rgba(113, 113, 122, 0.15);
-  
+
   /* Input and focus */
   --input: #27272a;
   --ring: #4489c8;
-  
+
   /* Radius */
   --radius: 0.75rem;
 }
@@ -71,7 +67,6 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* Base styles */
 * {
   border-color: var(--border);
 }
@@ -82,25 +77,69 @@ body {
   font-family: var(--font-sans), system-ui, sans-serif;
 }
 
-/* Smooth scrolling */
 html {
   scroll-behavior: smooth;
 }
 
-/* Selection style */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0ms !important;
+    animation-iteration-count: 0 !important;
+    transition-duration: 0ms !important;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .animate-pulse {
+    will-change: opacity;
+  }
+}
+
+@supports (view-transition-name: none) {
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 0s;
+  }
+
+  ::view-transition-old(root) {
+    animation-name: fade-out;
+  }
+
+  ::view-transition-new(root) {
+    animation-name: fade-in;
+  }
+}
+
+@keyframes fade-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
 ::selection {
   background: rgba(68, 137, 200, 0.3);
   color: var(--foreground);
 }
 
-/* Focus ring utility */
 .focus-ring {
   @apply outline-none ring-2 ring-ring ring-offset-2 ring-offset-background;
 }
 
-/* Gradient text utility */
 .gradient-text {
-  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-hover) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--primary) 0%,
+    var(--primary-hover) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -120,26 +159,31 @@ html {
 
 /* Animations */
 @keyframes fade-in {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slide-up {
-  from { 
+  from {
     opacity: 0;
     transform: translateY(10px);
   }
-  to { 
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes pulse-glow {
-  0%, 100% { 
+  0%,
+  100% {
     box-shadow: 0 0 20px rgba(68, 137, 200, 0.2);
   }
-  50% { 
+  50% {
     box-shadow: 0 0 40px rgba(68, 137, 200, 0.4);
   }
 }
@@ -154,34 +198,6 @@ html {
 
 .animate-pulse-glow {
   animation: pulse-glow 2s ease-in-out infinite;
-}
-
-::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
-}
-
-::-webkit-scrollbar-track {
-  background: var(--background);
-  border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb {
-  background: var(--border);
-  border-radius: 4px;
-  transition: background 0.2s ease;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: var(--primary-muted);
-}
-
-::-webkit-scrollbar-thumb:active {
-  background: var(--primary);
-}
-
-::-webkit-scrollbar-corner {
-  background: var(--background);
 }
 
 * {
