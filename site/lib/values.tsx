@@ -6,7 +6,7 @@ export const VALUES = {
     "Using Senti-Vox, you can accurately and precisely analyze the sentiment of multilingual text",
   APP_URL: "https://sentivox.vercel.app", // don't put slash at the end
   APP_VERSION: "1.0.0",
-  APP_GITHUB : "https://github.com/saksham-joshi/Senti-Vox",
+  APP_GITHUB : "https://github.com/saksham-joshi/SentiVox",
   APP_AUTHOR: {
     0: {
       name: "SAKSHAM JOSHI",
@@ -26,5 +26,5 @@ export const VALUES = {
   },
   ANALYZER_API: "https://senti-vox-api.onrender.com",
   ALLOWED_EMAIL_DOMAINS: ["@gmail.com", "@outlook.com"],
-  GITHUB_REPO: "https://github.com/saksham-joshi/Senti-Vox",
+  GITHUB_REPO: "https://github.com/saksham-joshi/SentiVox",
 } as const;
