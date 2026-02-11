@@ -76,16 +76,41 @@ SELECT
 FROM pg_policies 
 WHERE tablename = 'users';
 
--- =====================================================
--- Optional: Sample Data (for testing)
--- =====================================================
--- Uncomment to insert test data
-/*
-INSERT INTO users (email, name, apikey) 
-VALUES (
-  'test@gmail.com', 
-  'Test User', 
-  'test_api_key_' || gen_random_uuid()::text
-)
-ON CONFLICT (email) DO NOTHING;
-*/
+
+-- Table for storing OTPs with automatic expiration
+CREATE TABLE IF NOT EXISTS otp_store (
+  email TEXT PRIMARY KEY,
+  otp TEXT NOT NULL,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  expires_at TIMESTAMPTZ NOT NULL
+);
+
+-- Index for efficient cleanup of expired OTPs
+CREATE INDEX IF NOT EXISTS idx_otp_expires_at ON otp_store(expires_at);
+
+-- Table for rate limiting OTP requests
+CREATE TABLE IF NOT EXISTS otp_rate_limit (
+  email TEXT PRIMARY KEY,
+  attempt_count INTEGER DEFAULT 1,
+  first_attempt_at TIMESTAMPTZ DEFAULT NOW(),
+  last_attempt_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Index for efficient cleanup of old rate limit records
+CREATE INDEX IF NOT EXISTS idx_rate_limit_last_attempt ON otp_rate_limit(last_attempt_at);
+
+-- Function to automatically delete expired OTPs
+CREATE OR REPLACE FUNCTION delete_expired_otps()
+RETURNS void AS $$
+BEGIN
+  DELETE FROM otp_store WHERE expires_at < NOW();
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to clean up old rate limit records (older than 1 hour)
+CREATE OR REPLACE FUNCTION cleanup_old_rate_limits()
+RETURNS void AS $$
+BEGIN
+  DELETE FROM otp_rate_limit WHERE last_attempt_at < NOW() - INTERVAL '1 hour';
+END;
+$$ LANGUAGE plpgsql;
