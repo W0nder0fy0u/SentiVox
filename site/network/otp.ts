@@ -1,37 +1,33 @@
 import { VALUES } from "@/lib/values";
 import { COLORS } from "@/lib/colors";
 import nodemailer from "nodemailer";
-
-/*
- * In-memory OTP store
- * Key: email
- * Value: otp
- */
-const otpStore = new Map<string, string>();
+import {
+  storeOTP as dbStoreOTP,
+  getOTP as dbGetOTP,
+  deleteOTP as dbDeleteOTP,
+} from "./supabase";
 
 export async function addOTP(
   __email: string,
   __otp: string,
   __otp_valid_time: number
 ) {
-  const key = __email;
-  otpStore.set(key, __otp);
+  // Store OTP in database with expiration time
+  const success = await dbStoreOTP(__email, __otp, __otp_valid_time);
 
-  // Set expiration
-  setTimeout(() => {
-    if (otpStore.get(key) === __otp) {
-      otpStore.delete(key);
-    }
-  }, __otp_valid_time * 1000);
+  if (!success) {
+    console.error("Failed to store OTP in database for:", __email);
+    throw new Error("Failed to store OTP");
+  }
 }
 
 export async function verifyOTP(__email: string, __otp: string) {
-  const actual_otp = otpStore.get(__email);
+  const actual_otp = await dbGetOTP(__email);
   return actual_otp === __otp;
 }
 
 export async function removeOTP(__email: string) {
-  otpStore.delete(__email);
+  await dbDeleteOTP(__email);
 }
 
 const OTP_STRING_LEN = 6;
@@ -50,9 +46,13 @@ function generateOTP(): string {
 const AUTH_EMAIL = process.env.AUTH_EMAIL;
 const AUTH_EMAIL_PASSWORD = process.env.AUTH_EMAIL_PASSWORD;
 
-if(!AUTH_EMAIL || !AUTH_EMAIL_PASSWORD)
-{
-  console.error("You forgot to add AUTH_EMAIL or AUTH_EMAIL_PASSWORD in .env file! Found : ", AUTH_EMAIL , " : ", AUTH_EMAIL_PASSWORD);
+if (!AUTH_EMAIL || !AUTH_EMAIL_PASSWORD) {
+  console.error(
+    "You forgot to add AUTH_EMAIL or AUTH_EMAIL_PASSWORD in .env file! Found : ",
+    AUTH_EMAIL,
+    " : ",
+    AUTH_EMAIL_PASSWORD
+  );
 }
 
 const transporter = nodemailer.createTransport({
@@ -63,8 +63,7 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-if(!transporter)
-{
+if (!transporter) {
   console.error("Unable to create Gmail Transporter!");
 }
 
